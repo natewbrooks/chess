@@ -10,15 +10,15 @@ import chess.Client;
 import chess.Coordinates;
 import chess.components.ChessBox;
 
-public class King extends Piece {
+public class Knight extends Piece {
 
-    public King(Coordinates c, Team team) {
+    public Knight(Coordinates c, Team team) {
         super(c, team);
         whiteIcon = new ImageIcon(
-                new ImageIcon("chess/icons/WhiteKing60.png").getImage().getScaledInstance(75, 75,
+                new ImageIcon("chess/icons/WhiteKnight60.png").getImage().getScaledInstance(75, 75,
                         Image.SCALE_SMOOTH));
         blackIcon = new ImageIcon(
-                new ImageIcon("chess/icons/BlackKing60.png").getImage().getScaledInstance(75, 75,
+                new ImageIcon("chess/icons/BlackKnight60.png").getImage().getScaledInstance(75, 75,
                         Image.SCALE_SMOOTH));
         switch (team) {
             case WHITE:
@@ -34,30 +34,33 @@ public class King extends Piece {
         this.setHorizontalAlignment(JLabel.CENTER);
     }
 
-    public King(char row, int col) {
+    public Knight(char row, int col) {
         super(row, col);
-        whiteIcon = new ImageIcon("chess/icons/WhiteKing60.png");
-        blackIcon = new ImageIcon("chess/icons/BlackKing60.png");
+        whiteIcon = new ImageIcon("chess/icons/WhiteKnight60.png");
+        blackIcon = new ImageIcon("chess/icons/BlackKnight60.png");
     }
 
     public ArrayList<Coordinates> move() {
         ArrayList<Coordinates> endpoints = new ArrayList<>();
-        int[][] offsets = { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 0, -1 }, { 0, 1 }, { 1, -1 }, { 1, 0 }, { 1, 1 } };
+        int[][] offsets = { { -2, -1 }, { -2, 1 }, { -1, -2 }, { -1, 2 }, { 1, -2 }, { 1, 2 }, { 2, -1 }, { 2, 1 } };
         for (int[] offset : offsets) {
             Coordinates target = new Coordinates(coords.row + offset[0], coords.col + offset[1]);
-            ChessBox box = Client.board.search(target.position);
-            if (box != null) {
-                Piece piece = box.chessPiece;
-                if (piece instanceof Empty || piece.team != this.team) {
-                    endpoints.add(target);
-                }
+            if (isOnBoard(target) && isEmpty(target)) {
+                endpoints.add(target);
             }
         }
         return endpoints;
     }
 
     public ArrayList<Coordinates> attack() {
-        // In Chess, the King's attack is the same as its move
-        return move();
+        ArrayList<Coordinates> endpoints = new ArrayList<>();
+        int[][] offsets = { { -2, -1 }, { -2, 1 }, { -1, -2 }, { -1, 2 }, { 1, -2 }, { 1, 2 }, { 2, -1 }, { 2, 1 } };
+        for (int[] offset : offsets) {
+            Coordinates target = new Coordinates(coords.row + offset[0], coords.col + offset[1]);
+            if (isOnBoard(target) && hasOpponent(target)) {
+                endpoints.add(target);
+            }
+        }
+        return endpoints;
     }
 }

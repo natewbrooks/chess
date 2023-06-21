@@ -17,7 +17,6 @@ public class Coordinates {
         this.col = col;
         updatePositionToChar(col);
         this.position = Character.toString(charCol) + row;
-        System.out.println(position);
     }
 
     public Coordinates(Coordinates coord) {

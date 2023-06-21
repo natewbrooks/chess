@@ -13,8 +13,8 @@ public class Empty extends Piece {
         super(row, col);
     }
 
-    public Empty(Coordinates coords) {
-        super(coords);
+    public Empty(Coordinates coords, Team team) {
+        super(coords, team);
     }
 
     public ArrayList<Coordinates> move() {

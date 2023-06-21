@@ -10,15 +10,15 @@ import chess.Client;
 import chess.Coordinates;
 import chess.components.ChessBox;
 
-public class King extends Piece {
+public class Rook extends Piece {
 
-    public King(Coordinates c, Team team) {
+    public Rook(Coordinates c, Team team) {
         super(c, team);
         whiteIcon = new ImageIcon(
-                new ImageIcon("chess/icons/WhiteKing60.png").getImage().getScaledInstance(75, 75,
+                new ImageIcon("chess/icons/WhiteRook60.png").getImage().getScaledInstance(75, 75,
                         Image.SCALE_SMOOTH));
         blackIcon = new ImageIcon(
-                new ImageIcon("chess/icons/BlackKing60.png").getImage().getScaledInstance(75, 75,
+                new ImageIcon("chess/icons/BlackRook60.png").getImage().getScaledInstance(75, 75,
                         Image.SCALE_SMOOTH));
         switch (team) {
             case WHITE:
@@ -34,30 +34,34 @@ public class King extends Piece {
         this.setHorizontalAlignment(JLabel.CENTER);
     }
 
-    public King(char row, int col) {
+    public Rook(char row, int col) {
         super(row, col);
-        whiteIcon = new ImageIcon("chess/icons/WhiteKing60.png");
-        blackIcon = new ImageIcon("chess/icons/BlackKing60.png");
+        whiteIcon = new ImageIcon("chess/icons/WhiteRook60.png");
+        blackIcon = new ImageIcon("chess/icons/BlackRook60.png");
     }
 
     public ArrayList<Coordinates> move() {
         ArrayList<Coordinates> endpoints = new ArrayList<>();
-        int[][] offsets = { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 0, -1 }, { 0, 1 }, { 1, -1 }, { 1, 0 }, { 1, 1 } };
-        for (int[] offset : offsets) {
-            Coordinates target = new Coordinates(coords.row + offset[0], coords.col + offset[1]);
-            ChessBox box = Client.board.search(target.position);
-            if (box != null) {
-                Piece piece = box.chessPiece;
-                if (piece instanceof Empty || piece.team != this.team) {
-                    endpoints.add(target);
+        int[][] direction = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+        for (int[] d : direction) {
+            for (int i = 1; i < 8; i++) {
+                int newRow = coords.row + d[0] * i;
+                int newCol = coords.col + d[1] * i;
+                Coordinates target = new Coordinates(newRow, newCol);
+                if (!isOnBoard(target))
+                    break;
+                if (!isEmpty(target)) {
+                    if (hasOpponent(target))
+                        endpoints.add(target);
+                    break;
                 }
+                endpoints.add(target);
             }
         }
         return endpoints;
     }
 
     public ArrayList<Coordinates> attack() {
-        // In Chess, the King's attack is the same as its move
         return move();
     }
 }
